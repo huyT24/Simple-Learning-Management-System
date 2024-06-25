@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./coursepage.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>Courses Page</title>
+</head>
+<body>
+    <div class="nav">
+        <div class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="row">
+                <div class="col-lg-12">
+
+                    <div class="navbar-header">
+                    <button class="navbar-toggle" data-target="#mobile_menu" data-toggle="collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+                    <a href="./index.html" class="navbar-brand">EDUCATION</a>
+                    </div>
+
+                    <div class="navbar-collapse collapse" id="mobile_menu">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="./index.html">Home</a></li>
+                        <li><a href="./allcourses.html">All Course</a></li>
+                        <li><a href="./mycourses.html">My Course</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav">
+                        <li>
+                        <form action="" class="navbar-form">
+                            <div class="form-group">
+                            <div class="input-group">
+                               
+                            </div>
+                            </div>
+                        </form>
+                        </li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a id="logout" href=""><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                    </ul>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="heading-div"></div>
+
+    <div class="quizz">
+        <div class="container test">
+            <div class="heading-title"><h2 class="test-title">15 minutes test</h2></div>
+            <a href=""><button class="button">Do quizz</button></a>
+        </div>
+        <div class="container midterm">
+            <h2 class="midterm-title">Midterm test</h2>
+            <a href=""><button class="button">Do quizz</button></a>
+        </div>
+        <div class="container final">
+            <h2 class="final-title">Final test</h2>
+            <a href=""><button class="button">Do quizz</button></a>
+        </div>
+    </div>
+
+    <div>
+       <footer>
+            <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+                © 2022 Copyright:
+                <a class="text-dark" href="#">HuyTranDev</a>
+            </div>
+       </footer>
+    </div>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+    window.addEventListener('load', event => {
+        event.preventDefault();
+        let course_id = document.cookie.split(';')
+        let URL = '/api/course/' + course_id[1].substring(course_id[1].indexOf('=') + 1) +'/quizes';
+        
+        fetch(URL)
+        .then(statusCheck)
+        .then(res => res.json())
+        .then(handleProcess)
+        .catch(err => console.log(err))
+    })
+
+    function handleProcess(responseData) {
+        let heading_div = document.querySelector('.heading-div');
+        let headingCourse = document.createElement('h1');
+        headingCourse.setAttribute('class', 'courses-heading');
+        headingCourse.innerHTML = responseData[0]['course_name'];
+        heading_div.appendChild(headingCourse);
+    }
+
+    async function statusCheck(res) {
+        if (!res.ok) {
+            throw new Error(await res.text());
+        }
+        return res; 
+    }
+</script>
+
+<script>
+    let buttons = document.getElementsByTagName('button');
+    let cookies= document.cookie.split(';');
+    let course_id = cookies[1].substring(cookies[1].indexOf('=') + 1);
+
+    for(let i = 0; i < buttons.length; i++) {
+        let button = buttons[i];
+        button.addEventListener('click', event => {
+            event.preventDefault();
+
+            document.cookie = 'quizz_id=; expires = Thu, 01 Jan 1970 00:00:00 GMT';
+            const day = new Date();
+            day.setTime(day.getTime() + (1 * 24 * 60 * 60 * 1000));
+            let expires = 'expires' + day.toUTCString();
+            document.cookie = 'quizz_id=' + course_id + ';' + expires + ';path=/';
+            window.location.href = 'http://localhost:8000/doquizz.html';
+        })
+    }
+</script>
+
+<script>
+    //logout 
+    let logout = document.querySelector('#logout');
+    logout.addEventListener('click', event => {
+        event.preventDefault();
+        
+        document.cookie = 'user_name=; expires = Thu, 01 Jan 1970 00:00:00 GMT';
+        document.cookie = 'course_id=; expires = Thu, 01 Jan 1970 00:00:00 GMT';
+        document.cookie = 'quizz_id=; expires = Thu, 01 Jan 1970 00:00:00 GMT';
+        window.location.href = 'http://localhost:8000/index.html';
+    })
+</script>
+</html>

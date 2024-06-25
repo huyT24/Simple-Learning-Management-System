@@ -1,0 +1,45 @@
+* {
+    font-family: sans-serif Arial, Helvetica, sans-serif;
+}
+
+.multiple-choicce {
+    border: 1px solid lightblue;
+    border-radius: 7px;
+    height: 83vh;
+    position: relative;
+    margin: 30px 50px;
+}
+
+p.question, input#input, h2 {
+    margin-left: 30px;
+}
+
+p.question {
+    margin-top: 30px;
+}
+
+input#input {
+    margin-top: 5px;
+    margin-right: 10px;
+}
+
+
+.submit {
+    margin: 50px 200px;
+    padding: 10px 30px;
+    border: 2px solid rgb(80, 209, 129);
+    border-radius: 15px;
+    font-weight: 700;
+    font-size: 18px;
+    float: right;
+}
+
+.submit:hover {
+    margin: 50px 200px;
+    padding: 10px 30px;
+    border: 2px solid rgb(80, 209, 129);
+    border-radius: 15px;
+    font-weight: 700;
+    font-size: 18px;
+    float: right;
+}

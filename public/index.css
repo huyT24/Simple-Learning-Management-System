@@ -1,0 +1,127 @@
+* {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-color: white;
+}
+div {
+    display: block;
+}
+
+img#logo{
+    margin-left: 50px;
+    max-width: 150px;
+    float: left;
+    height: 50px;
+}
+
+
+h1.announcement {
+    padding: 0px 30px;
+    font-size: 2vw;
+}
+
+div#announcement {
+    padding: 30px 30px;
+    height: fit-content;
+    max-height: 2000px;
+    font-size: 1vw;
+}
+
+div.noti {
+    margin: 50px 0px;
+}
+
+
+div.title {
+    background: rgb(226, 226, 226);
+    border-radius: 7px;
+    padding: 0px 10px;
+    line-height: 20px;
+}
+
+
+@media screen  and (max-width: 1100px){
+    img#logo{
+        margin-left: 0px;
+        max-width: 100px;
+        float: left;
+        height: 50px;
+    }
+
+    #slider {
+        width: 100%;
+        background: url("https://images.pexels.com/photos/3182778/pexels-photo-3182778.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        margin-top: -60%;
+    }
+
+    .section2 {
+        margin-top: -70%;
+        float: left;
+        width: 100%;
+        color: rgb(75, 65, 45);
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .section2 .content {
+        width: 100%;
+    }
+
+    .section2 .content .left{
+        width: 100%;
+        background-image: url("https://images.pexels.com/photos/285814/pexels-photo-285814.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+    .section2 .content .left .card{
+        font-size: 30px;
+        color: white;
+    }
+    .section2 .content .right{
+        float: left;
+        width: 100%;
+    }
+    
+    .section2 .content .right .card{
+        padding: 50px 50px;
+        font-size: 120%;
+        text-align: left;
+        color: black;
+    }
+
+    h1.announcement {
+        padding: 0px 30px;
+        font-size: 2vw;
+    }
+    
+    div#announcement {
+        padding: 30px 30px;
+        height: fit-content;
+        max-height: 2000px;
+    }
+    
+    div.noti {
+        margin: 50px 0px;
+    }
+    
+    div.noti:hover{
+        border: 2px solid rgb(147, 209, 230);
+        border-radius: 7px;
+        margin: 30px 0px;
+        box-sizing: border-box;
+    }
+    
+    div.title {
+        background: rgb(226, 226, 226);
+        border-radius: 7px;
+        padding: 0px 10px;
+        line-height: 20px;
+    }
+}

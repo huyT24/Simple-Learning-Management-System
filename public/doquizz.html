@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./doquizz.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <title>Do Quizz</title>
+</head>
+<body>
+   <div class="nav">
+      <div class="navbar navbar-inverse">
+          <div class="container-fluid">
+              <div class="row">
+              <div class="col-lg-12">
+
+                  <div class="navbar-header">
+                  <button class="navbar-toggle" data-target="#mobile_menu" data-toggle="collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+                  <a href="./index.html" class="navbar-brand">EDUCATION</a>
+                  </div>
+
+                  <div class="navbar-collapse collapse">
+                  <ul class="nav navbar-nav">
+                      <li class="active"><a href="./index.html">Home</a></li>
+                      <li><a href="./allcourses.html">All Course</a></li>
+                      <li><a href="./mycourses.html">My Course</a></li>
+                     
+                  </ul>
+                  <ul class="nav navbar-nav">
+                      <li>
+                      <form action="" class="navbar-form">
+                          <div class="form-group">
+                          <div class="input-group">
+                              
+                          </div>
+                          </div>
+                      </form>
+                      </li>
+                  </ul>
+
+                  <ul class="nav navbar-nav navbar-right">
+                      <li><a href="" id="logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                  </ul>
+                  </div>
+              </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+   <div class="multiple-choicce">
+      <form class="form form_submit" action="">
+         
+      </form>
+   </div>
+   <div>
+      <footer>
+           <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+               © 2022 Copyright:
+               <a class="text-dark" href="#">HuyTranDev</a>
+           </div>
+      </footer>
+   </div>
+</body>
+<script>
+   window.addEventListener('load', event => {
+      event.preventDefault();
+      
+      let cookies= document.cookie.split(';');
+      let course_id = cookies[1].substring(cookies[1].indexOf('=') + 1);
+      let quizz_id  = cookies[2].substring(cookies[2].indexOf('=') + 1);
+   
+      let URL = 'api/doquiz/' + quizz_id;
+      fetch(URL)
+      .then(statusCheck)
+      .then(res => res.json())
+      .then(handleProcess)
+      .catch(err =>console.log(err))
+   })
+
+   function handleProcess(responseData) {
+      let form = document.querySelector('.form_submit');
+      for(let i = 0; i < responseData.length; i++) {
+         let dataQuestion = JSON.parse(responseData[i]['data']);
+         let question = dataQuestion['text'];
+         let choices = dataQuestion['choices'];
+   
+         let p = document.createElement('p');
+         p.setAttribute('id', responseData[i]['q_id']);
+         p.setAttribute('class', 'question')
+         let b = document.createElement('b');
+         b.innerHTML = (i + 1) + ". " + question;
+         p.appendChild(b);
+         form.appendChild(p);
+
+         for(let j = 0; j < choices.length; j++) {
+            let input = document.createElement('input');
+            let br = document.createElement('br');
+            
+            input.setAttribute('type', 'radio');
+            input.setAttribute('name', i);
+            input.setAttribute('value', j);
+            input.setAttribute('id', 'input')
+            form.appendChild(input);
+            form.append(choices[j]);
+            form.appendChild(br)
+         }
+      }
+
+      let h2 = document.createElement('h2');
+      h2.innerHTML = "Your score: ";
+      
+      let submit = document.createElement('input');
+      submit.setAttribute('type', 'submit');
+      submit.setAttribute('value', 'Submit');
+      submit.setAttribute('class', 'submit');
+
+      form.appendChild(h2);
+      form.appendChild(submit);
+   }
+
+   async function statusCheck(res) {
+        if (!res.ok) {
+            throw new Error(await res.text());
+        }
+        return res; 
+    }
+</script>
+<script>
+   let form = document.querySelector('.form_submit');
+   form.addEventListener('submit', event => {
+      event.preventDefault();
+
+      let pTags = document.querySelectorAll('.question');
+      let answers = [];
+      
+      for(let i = 0; i< form.length; i++) {
+            if(form[i].checked) {
+            let answer_id = form[i].getAttribute('value');
+            answers.push(answer_id);
+         }
+      }
+
+      let cookies= document.cookie.split(';');
+      let course_id = cookies[1].substring(cookies[1].indexOf('=') + 1);
+      let quizz_id  = cookies[2].substring(cookies[2].indexOf('=') + 1);
+      
+      let URL = '/api/course/' + course_id + '/doquiz/' + quizz_id;
+      
+      fetch(URL,{
+         method: "POST",
+         body: form
+      })
+      .then(statusCheck)
+      .then(res => res.json())
+      .then(data => {
+         let mark = 0;
+         for(let i = 0; i < data.length; i++) {
+            let dataQuestion = JSON.parse(data[i]['data']);
+            let correctAnswer = dataQuestion['correct'];
+           
+               if (correctAnswer == answers[i]) {
+                  mark++;
+               }
+         }
+
+         let h2 = document.querySelector('h2');
+         h2.innerHTML = "Your score: " + mark + "/3";
+
+         document.cookie = 'course_id=; expires = Thu, 01 Jan 1970 00:00:00 GMT';
+         document.cookie = 'quizz_id=; expires = Thu, 01 Jan 1970 00:00:00 GMT';
+
+      setTimeout(() => {
+         alert("Done your quizz! Now you will return home page!");
+         window.location.href = "http://localhost:8000/index.html"
+      },2000)
+      })
+      .catch(err => console.log(err))
+   })
+   async function statusCheck(res) {
+   if (!res.ok) {
+     throw new Error(await res.text());
+   }
+   return res; 
+ }
+</script>
+
+<script>
+   //logout 
+   let logout = document.querySelector('#logout');
+   logout.addEventListener('click', event => {
+       event.preventDefault();
+       
+       document.cookie = 'user_name=; expires = Thu, 01 Jan 1970 00:00:00 GMT';
+       window.location.href = 'http://localhost:8000/index.html';
+   })
+</script>
+</html>

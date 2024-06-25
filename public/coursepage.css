@@ -1,0 +1,45 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+.courses-heading{
+    margin-top: 80px;
+    margin-left: 50px;
+    display: block;
+    font-weight: 700;
+    text-align: center;
+    text-decoration:underline;
+}
+
+.quizz {
+  height: 72vh;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100%;
+  height: 100px;
+  border: 1px solid lightblue;
+  border-radius: 10px;
+  margin: 50px 0px;
+}
+
+.button {
+  float: right;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.button:hover {
+  float: right;
+  border: 1px solid rgb(92, 190, 207);
+  border-radius: 5px;
+  background-color: aliceblue;
+}
+

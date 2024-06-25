@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./mycourses.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>My Courses</title>
+</head>
+<body>
+    <div class="nav">
+        <div class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="row">
+                <div class="col-lg-12">
+
+                    <div class="navbar-header">
+                    <button class="navbar-toggle" data-target="#mobile_menu" data-toggle="collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+                    <a href="./index.html" class="navbar-brand">EDUCATION</a>
+                    </div>
+
+                    <div class="navbar-collapse collapse" id="mobile_menu">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="./index.html">Home</a></li>
+                        <li><a href="./allcourses.html">All Course</a></li>
+                        <li><a href="./mycourses.html" id="mycourse">My Course</a></li>
+                        
+                    </ul>
+                    <ul class="nav navbar-nav">
+                        <li>
+                        <form action="" class="navbar-form">
+                            <div class="form-group">
+                            <div class="input-group">
+                            
+                            </div>
+                            </div>
+                        </form>
+                        </li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="" id="logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                    </ul>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="heading">
+        <h1 class="courses-heading">My Courses</h1>
+    </div>
+
+    <div class="courses"></div>
+    <div>
+       <footer>
+            <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+                © 2022 Copyright:
+                <a class="text-dark" href="#">HuyTranDev</a>
+            </div>
+       </footer>
+    </div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+    // fetch and display my courses
+    window.addEventListener('load', event => {
+        event.preventDefault();
+        document.cookie = 'course_id=; expires = Thu, 01 Jan 1970 00:00:00 GMT';
+        document.cookie = 'quizz_id=; expires = Thu, 01 Jan 1970 00:00:00 GMT';
+        
+        if( document.cookie == '' || document.cookie === undefined || document.cookie == 'user_name=') {
+            alert('You must login to see our courses!');
+            window.location.href = 'http://localhost:8000/login.html'
+        } else{
+            let URL = '/api/my/courses';
+            fetch(URL,{
+            headers: {
+                cookie: document.cookie
+            }
+        })
+        .then(statusCheck)
+        .then(res => res.json())
+        .then(handleProcess)
+        .catch(err => console.log(err))
+
+        }
+    })
+
+    function handleProcess(responseData) {
+            let courses = document.querySelector('.courses');
+
+            for(let i = 0; i < responseData.length; i++) {
+                //container
+                let container = document.createElement('div');
+                container.setAttribute('class', 'container');
+
+                //image-and-content ={image, content}
+                let image_and_content = document.createElement('div');
+                image_and_content.setAttribute('class', 'image-and-content');
+                
+                //image 
+                let image = document.createElement('div');
+                image.setAttribute('class', 'image ' + responseData[i]['course_name'])
+
+                //content = {title course, description}
+                let content = document.createElement('div');
+                content.setAttribute('class', 'content');
+
+                //title course
+                let title_course = document.createElement('h3');
+                title_course.innerHTML = responseData[i]['course_title'];
+
+                let description = document.createElement('p');
+                description.innerHTML = responseData[i]['course_description'];
+
+                content.appendChild(title_course);
+                content.appendChild(description);
+
+                image_and_content.appendChild(image);
+                image_and_content.appendChild(content);
+
+                //button
+                let buttonDiv = document.createElement('div');
+                buttonDiv.setAttribute('class','button');
+                let button = document.createElement('button');
+                button.setAttribute('class', 'out-course ' + responseData[i]['course_name']);
+                button.innerHTML = 'Watch course';
+
+                buttonDiv.appendChild(button);
+
+                container.appendChild(image_and_content);
+                container.appendChild(buttonDiv);
+
+                courses.appendChild(container);
+            }
+
+            //out course
+            let buttons = courses.getElementsByTagName('button');
+            for(let j = 0; j < buttons.length; j++) {
+                buttons[j].addEventListener('click', event => {
+                    event.preventDefault();
+                    document.cookie = 'course_id=; expires = Thu, 01 Jan 1970 00:00:00 GMT';
+                    document.cookie = 'quizz_id=; expires = Thu, 01 Jan 1970 00:00:00 GMT';
+                    const day = new Date();
+                    day.setTime(day.getTime() + (1 * 24 * 60 * 60 * 1000));
+                    let expires = 'expires' + day.toUTCString();
+                    document.cookie = 'course_id=' + responseData[j]['course_id'] + ';' + expires + ';path=/';
+                    window.location.href = 'http://localhost:8000/coursepage.html'
+                })
+            }
+        }
+
+    async function statusCheck(res) {
+        if (!res.ok) {
+            throw new Error(await res.text());
+        }
+        return res; 
+    }
+</script>
+<script>
+    //logout 
+    let logout = document.querySelector('#logout');
+    logout.addEventListener('click', event => {
+        event.preventDefault();
+        
+        document.cookie = 'user_name=; expires = Thu, 01 Jan 1970 00:00:00 GMT';
+        document.cookie = 'course_id=; expires = Thu, 01 Jan 1970 00:00:00 GMT';
+        document.cookie = 'quizz_id=; expires = Thu, 01 Jan 1970 00:00:00 GMT';
+        window.location.href = 'http://localhost:8000/index.html';
+    })
+</script>
+</html>
